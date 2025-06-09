@@ -196,7 +196,7 @@ def app(image_dir,threads,model):
         os.makedirs(denoised_dir)
     for i in range(len(out_q)):
         img = cv2.imread(os.path.join(clean_dir, listimage[i]), cv2.IMREAD_GRAYSCALE)
-        denoised_img = np.full_like(img, out_q[i] * (255 // 9))  # Scale back to 0-255
+        denoised_img = np.full_like(img, out_q[i] * (255 // 9), dtype=np.int8)  # Scale back to 0-255
         output_path = os.path.join(denoised_dir, f'denoised_{i}.png')
         cv2.imwrite(output_path, denoised_img)
     print('Denoised images saved to:', denoised_dir)
