@@ -98,15 +98,24 @@ def runDPU(id,start,dpu,img):
         if count<n_of_images:
             if len(ids) < ids_max-1:
                 continue
+        # for index in range(len(ids)):
+        #     dpu.wait(ids[index][0])
+        #     write_index = ids[index][2]
+        #     '''store output vectors '''
+        #     for j in range(ids[index][1]):
+        #         # we can avoid output scaling if use argmax instead of softmax
+        #         # out_q[write_index] = np.argmax(outputData[0][j] * output_scale)
+        #         out_q[write_index] = np.argmax(outputData[index][0][j])
+        #         write_index += 1
         for index in range(len(ids)):
             dpu.wait(ids[index][0])
             write_index = ids[index][2]
-            '''store output vectors '''
+            '''store output vectors'''
             for j in range(ids[index][1]):
-                # we can avoid output scaling if use argmax instead of softmax
-                # out_q[write_index] = np.argmax(outputData[0][j] * output_scale)
-                out_q[write_index] = np.argmax(outputData[index][0][j])
+                # 直接保存输出数据而不是argmax
+                out_q[write_index] = outputData[index][0][j]
                 write_index += 1
+
         ids=[]
 
 
