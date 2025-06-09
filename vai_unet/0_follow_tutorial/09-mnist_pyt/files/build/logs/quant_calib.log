@@ -1,0 +1,34 @@
+No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+
+[0;32m[VAIQ_NOTE]: Loading NNDCT kernels...[0m
+
+-----------------------------------------
+PyTorch version :  1.4.0
+3.6.13 | packaged by conda-forge | (default, Sep 23 2021, 07:56:31) 
+[GCC 9.4.0]
+-----------------------------------------
+ Command line options:
+--build_dir    :  ./build
+--quant_mode   :  calib
+--batchsize    :  100
+-----------------------------------------
+No CUDA devices available..selecting CPU
+
+[0;33m[VAIQ_WARN]: CUDA is not available, change device to CPU[0m
+
+[0;32m[VAIQ_NOTE]: Quantization calibration process start up...[0m
+
+[0;32m[VAIQ_NOTE]: =>Quant Module is in 'cpu'.[0m
+
+[0;32m[VAIQ_NOTE]: =>Parsing CNN...[0m
+
+[0;32m[VAIQ_NOTE]: =>Doing weights equalization...[0m
+
+[0;32m[VAIQ_NOTE]: =>Quantizable module is generated.(./build/quant_model/CNN.py)[0m
+
+[0;32m[VAIQ_NOTE]: =>Get module with quantization.[0m
+
+Test set: Accuracy: 9877/10000 (98.77%)
+
+
+[0;32m[VAIQ_NOTE]: =>Exporting quant config.(./build/quant_model/quant_info.json)[0m
