@@ -1,0 +1,61 @@
+# 忽略压缩包文件
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.gz
+*.xz
+
+# 忽略常见数据文件
+*.csv
+*.tsv
+*.json
+*.xml
+*.parquet
+*.feather
+*.hdf5
+*.h5
+*.db
+*.sqlite
+*.npy
+*.npz
+
+# 忽略图片与媒体
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.svg
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+
+# 忽略机器学习模型和检查点
+*.pt
+*.pth
+*.ckpt
+*.pb
+*.onnx
+*.bin
+
+# 忽略Jupyter缓存
+.ipynb_checkpoints/
+
+# 忽略数据、模型目录
+data/
+datasets/
+models/
+output/
+checkpoints/
+
+# 忽略无后缀的大数据文件（如MNIST）
+*labels-idx*
+*images-idx*
+*idx*
+*ubyte
