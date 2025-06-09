@@ -24,5 +24,5 @@ source compile.sh u50 ${BUILD} ${LOG}
 # python -u target.py --target zcu102 -d ${BUILD} 2>&1 | tee ${LOG}/target_zcu102.log
 # python -u target.py --target zcu104 -d ${BUILD} 2>&1 | tee ${LOG}/target_zcu104.log
 # python -u target.py --target vck190 -d ${BUILD} 2>&1 | tee ${LOG}/target_vck190.log
-python -u target.py --target u50    -d ${BUILD} 2>&1 | tee ${LOG}/target_u50.log
+python -u target.py --target u50 --num_images 10    -d ${BUILD} 2>&1 | tee ${LOG}/target_u50.log
 

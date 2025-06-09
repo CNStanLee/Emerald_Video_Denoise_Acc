@@ -72,15 +72,26 @@ def generate_images(dset_dir, num_images, dest_dir):
   # iterate thru' the dataset and create images
   print('Generating', num_images, 'noisy images in', dest_dir)
   dataiter = iter(test_loader)
+  # image dirs
+  os.makedirs(dest_dir + '/clean', exist_ok=True)
+  os.makedirs(dest_dir + '/noisy', exist_ok=True)
+  clean_dir = dest_dir + '/clean'
+  noisy_dir = dest_dir + '/noisy'
   for i in tqdm(range(num_images)):
     image, label = dataiter.next()
-    image = add_noise(image)  # Add random noise
+    noisy_image = add_noise(image)  # Add random noise
+    # save original image
     img = image.numpy().squeeze()
     img = (img * 255.).astype(np.uint8)
     idx = label.numpy()
-    img_file=os.path.join(dest_dir, classes[idx[0]]+'_'+str(i)+'.png')
+    img_file=os.path.join(clean_dir, 'clean'+'_'+str(i)+'.png')
     cv2.imwrite(img_file, img)
-
+    # save noisy image
+    img = noisy_image.numpy().squeeze()
+    img = (img * 255.).astype(np.uint8)
+    idx = label.numpy()
+    img_file=os.path.join(noisy_dir, 'noisy'+'_'+str(i)+'.png')
+    cv2.imwrite(img_file, img)
   return
 
 
@@ -107,6 +118,7 @@ def make_target(build_dir,target,num_images,app_dir):
     dest_dir = target_dir + '/images'
     shutil.rmtree(dest_dir, ignore_errors=True)  
     os.makedirs(dest_dir)
+
     generate_images(dset_dir, num_images, dest_dir)
 
 
