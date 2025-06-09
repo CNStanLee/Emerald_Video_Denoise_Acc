@@ -180,26 +180,25 @@ def app(image_dir,threads,model):
     # print (_divider)
     
     # save denoised images
-    clean_dir = 'images/clean'
-    noisy_dir = 'images/noisy'
-    denoised_dir = 'images/denoised'
-    if not os.path.exists(denoised_dir):
-        os.makedirs(denoised_dir)
+    output_dir = 'images/denoised'
+    os.makedirs(output_dir, exist_ok=True)
     for i in range(len(out_q)):
-        img = cv2.imread(os.path.join(clean_dir, listimage[i]), cv2.IMREAD_GRAYSCALE)
+        img = cv2.imread(os.path.join(image_dir, listimage[i]), cv2.IMREAD_GRAYSCALE)
         denoised_img = np.full_like(img, out_q[i] * (255 // 9))  # Scale back to 0-255
-        output_path = os.path.join(denoised_dir, f'denoised_{i}.png')
+        output_path = os.path.join(output_dir, f'denoised_{i}.png')
         cv2.imwrite(output_path, denoised_img)
-    print('Denoised images saved to:', denoised_dir)
+    print('Denoised images saved to:', output_dir)
     
     # combare images in denoised folder with clean folder
     # identify the image by filename noisy_i.png and clean_i.png
+    clean_dir = os.path.join(image_dir, 'clean')
+    denoised_dir = output_dir
     average_psnr = 0
     average_mse = 0
     for i in range(len(out_q)):
-        denoised_image_path = os.path.join(denoised_dir, f'denoised_{i}.png')
+        noisy_image_path = os.path.join(denoised_dir, f'denoised_{i}.png')
         clean_image_path = os.path.join(clean_dir, f'clean_{i}.png')
-        noisy_image = cv2.imread(denoised_image_path, cv2.IMREAD_GRAYSCALE)
+        noisy_image = cv2.imread(noisy_image_path, cv2.IMREAD_GRAYSCALE)
         clean_image = cv2.imread(clean_image_path, cv2.IMREAD_GRAYSCALE)
         mse = np.mean((noisy_image - clean_image) ** 2)
         psnr = 20 * np.log10(255.0 / np.sqrt(mse)) if mse != 0 else float('inf')
