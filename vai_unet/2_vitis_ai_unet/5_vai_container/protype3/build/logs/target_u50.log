@@ -1,0 +1,27 @@
+
+------------------------------------
+3.6.13 | packaged by conda-forge | (default, Sep 23 2021, 07:56:31) 
+[GCC 9.4.0]
+------------------------------------
+Command line options:
+ --build_dir    :  ./build
+ --target       :  u50
+ --num_images   :  10
+ --app_dir      :  application
+------------------------------------
+
+Copying application code from application ...
+Copying compiled model from ./build/compiled_model/Denoise_u50.xmodel ...
+Files already downloaded and verified
+Generating 10 noisy images in ./build/target_u50/images
+  0%|          | 0/10 [00:00<?, ?it/s]Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+Image shape: torch.Size([3, 32, 32]), Noisy image shape: torch.Size([3, 32, 32])
+100%|██████████| 10/10 [00:00<00:00, 2779.71it/s]
