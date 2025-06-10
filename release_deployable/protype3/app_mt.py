@@ -179,40 +179,50 @@ def app(image_dir,threads,model):
 
 
     ''' post-processing '''
-
     # save denoised images
     clean_dir = 'images/clean'
     noisy_dir = 'images/noisy'
     denoised_dir = 'images/denoised'
     if not os.path.exists(denoised_dir):
         os.makedirs(denoised_dir)
-    for i in range(len(out_q)):
-        img = cv2.imread(os.path.join(clean_dir, listimage[i]), cv2.IMREAD_GRAYSCALE)
-        denoised_img = np.full_like(img, out_q[i] * (255 // 9), dtype=np.int8)  # Scale back to 0-255
-        output_path = os.path.join(denoised_dir, f'denoised_{i}.png')
-        cv2.imwrite(output_path, denoised_img)
-    print('Denoised images saved to:', denoised_dir)
-    
-    # combare images in denoised folder with clean folder
-    # identify the image by filename noisy_i.png and clean_i.png
+
+    # Get output scale (if DPU output is quantized)
+    output_fixpos = all_dpu_runners[0].get_output_tensors()[0].get_attr("fix_point")
+    output_scale = 2 ** output_fixpos if output_fixpos is not None else 1.0
+
     average_psnr = 0
     average_mse = 0
+
     for i in range(len(out_q)):
-        denoised_image_path = os.path.join(denoised_dir, f'denoised_{i}.png')
+        # 1. De-quantize and scale DPU output to [0, 255]
+        denoised_img = (out_q[i] / output_scale).clip(0, 1) * 255
+        denoised_img = denoised_img.astype(np.uint8)  # Convert to uint8 for image saving
+        
+        # 2. Save denoised image (as RGB)
+        output_path = os.path.join(denoised_dir, f'denoised_{i}.png')
+        cv2.imwrite(output_path, cv2.cvtColor(denoised_img, cv2.COLOR_RGB2BGR))  # OpenCV uses BGR
+        
+        # 3. Load original clean image (as RGB)
         clean_image_path = os.path.join(clean_dir, f'clean_{i}.png')
-        noisy_image = cv2.imread(denoised_image_path, cv2.IMREAD_GRAYSCALE)
-        clean_image = cv2.imread(clean_image_path, cv2.IMREAD_GRAYSCALE)
-        mse = np.mean((noisy_image - clean_image) ** 2)
+        clean_image = cv2.imread(clean_image_path, cv2.IMREAD_COLOR)
+        clean_image = cv2.cvtColor(clean_image, cv2.COLOR_BGR2RGB)  # Convert to RGB
+        
+        # 4. Calculate MSE and PSNR (RGB channels)
+        mse = np.mean((clean_image - denoised_img) ** 2)
         psnr = 20 * np.log10(255.0 / np.sqrt(mse)) if mse != 0 else float('inf')
+        
         average_psnr += psnr
         average_mse += mse
+
     average_psnr /= len(out_q)
     average_mse /= len(out_q)
-    print('Average PSNR: %.2f dB' % average_psnr)
-    print('Average MSE: %.2f' % average_mse)
-    print ('Done.')
-    print (_divider)
-    return
+
+    print('Denoised images saved to:', denoised_dir)
+    print('Average PSNR (RGB): %.2f dB' % average_psnr)
+    print('Average MSE (RGB): %.4f' % average_mse)
+    print('Done.')
+    print(_divider)
+
 
 
 
