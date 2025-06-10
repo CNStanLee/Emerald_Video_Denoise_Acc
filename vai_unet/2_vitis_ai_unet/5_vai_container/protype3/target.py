@@ -32,6 +32,22 @@ import numpy as np
 from tqdm import tqdm
 from torchvision import datasets, transforms
 from common import gen_transform
+import matplotlib.pyplot as plt
+
+import os
+import shutil
+
+def copytree(src, dst, symlinks=False, ignore=None):
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    for item in os.listdir(src):
+        s = os.path.join(src, item)
+        d = os.path.join(dst, item)
+        if os.path.isdir(s):
+            copytree(s, d, symlinks, ignore)
+        else:
+            shutil.copy2(s, d)
+
 
 
 DIVIDER = '-----------------------------------------'
@@ -49,109 +65,52 @@ def add_noise(images, noise_factor=NOISE_FACTOR):
 
 def generate_images(dset_dir, num_images, dest_dir):
 
-  classes = ['zero','one','two','three','four','five','six','seven','eight','nine']
+    # transform = transforms.Compose([
+    #     transforms.ToTensor(),
+    #     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # CIFAR10 是 RGB 图像
+    # ])
 
-  # MNIST test dataset and dataloader
-  # test_dataset = torchvision.datasets.MNIST(dset_dir,
-  #                                           train=False, 
-  #                                           download=True,
-  #                                           transform=gen_transform)
+    
+    # testset = datasets.CIFAR10(root='0_data/', download=True, train=False, transform=transform)
 
-  # test_loader = torch.utils.data.DataLoader(test_dataset,
-  #                                           batch_size=1, 
-  #                                           shuffle=True)
-  
-
-#   test_dataset = torchvision.datasets.FashionMNIST(dset_dir,
-#                                             train=False, 
-#                                             download=True,
-#                                             transform=gen_transform)
-
-#   test_loader = torch.utils.data.DataLoader(test_dataset,
-#                                             batch_size=1, 
-#                                             shuffle=False)
-
-  transform = transforms.Compose([
-      transforms.ToTensor(),
-      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # CIFAR10 是 RGB 图像
-  ])
-
-  
-  testset = datasets.CIFAR10(root='0_data/', download=True, train=False, transform=transform)
-
-  
-  test_loader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=True)
+    
+    # test_loader = torch.utils.data.DataLoader(testset, batch_size=1, shuffle=True)
 
 
-  # iterate thru' the dataset and create images
-#   print('Generating', num_images, 'noisy images in', dest_dir)
-#   dataiter = iter(test_loader)
-#   # image dirs
-#   os.makedirs(dest_dir + '/clean', exist_ok=True)
-#   os.makedirs(dest_dir + '/noisy', exist_ok=True)
-#   clean_dir = dest_dir + '/clean'
-#   noisy_dir = dest_dir + '/noisy'
-#   for i in tqdm(range(num_images)):
-#     image, label = dataiter.next()
-#     noisy_image = add_noise(image)  # Add random noise
-#     # save original image
-#     img = image.numpy().squeeze()
-#     img = (img * 255.).astype(np.uint8)
-#     idx = label.numpy()
-#     img_file=os.path.join(clean_dir, 'clean'+'_'+str(i)+'.png')
-#     cv2.imwrite(img_file, img)
-#     # save noisy image
-#     img = noisy_image.numpy().squeeze()
-#     img = (img * 255.).astype(np.uint8)
-#     idx = label.numpy()
-#     img_file=os.path.join(noisy_dir, 'noisy'+'_'+str(i)+'.png')
-#     cv2.imwrite(img_file, img)
-  print('Generating', num_images, 'noisy images in', dest_dir)
-  dataiter = iter(test_loader)
-  # 创建目录
-  os.makedirs(dest_dir + '/clean', exist_ok=True)
-  os.makedirs(dest_dir + '/noisy', exist_ok=True)
-  clean_dir = dest_dir + '/clean'
-  noisy_dir = dest_dir + '/noisy'
+    # print('Generating', num_images, 'noisy images in', dest_dir)
+    # dataiter = iter(test_loader)
+    # # 创建目录
+    # os.makedirs(dest_dir + '/clean', exist_ok=True)
+    # os.makedirs(dest_dir + '/noisy', exist_ok=True)
+    # clean_dir = dest_dir + '/clean'
+    # noisy_dir = dest_dir + '/noisy'
       
-  for i in tqdm(range(num_images)):
-      # 获取批量数据并提取第一张图像
-      image, label = dataiter.next()
-      image = image[0]  # 形状：(3, H, W)，CIFAR-10 为 (3, 32, 32)
-      noisy_image = add_noise(image)  # 添加噪声，形状保持 (3, H, W)
-      
-      # 打印形状以调试
-      print(f"Image shape: {image.shape}, Noisy image shape: {noisy_image.shape}")
-      
-      # 转换为 numpy 数组
-      img = image.numpy()  # 形状：(3, H, W)
-      noisy_img = noisy_image.numpy()  # 形状：(3, H, W)
-      
-      # 转置通道顺序为 (H, W, C)，适配 OpenCV
-      img = img.transpose(1, 2, 0)  # 形状：(H, W, 3)
-      noisy_img = noisy_img.transpose(1, 2, 0)  # 形状：(H, W, 3)
-      
-      # 如果数据经过标准化，反标准化
-      # 假设 CIFAR-10 使用了 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-      img = img * 0.5 + 0.5  # 反标准化到 [0, 1]
-      noisy_img = noisy_img * 0.5 + 0.5  # 反标准化到 [0, 1]
-      
-      # 缩放到 [0, 255] 并转换为 uint8
-      img = (img * 255.).astype(np.uint8)
-      noisy_img = (noisy_img * 255.).astype(np.uint8)
-      
-      # 转换为 BGR 格式（CIFAR-10 是 RGB，OpenCV 需要 BGR）
-      img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-      noisy_img = cv2.cvtColor(noisy_img, cv2.COLOR_RGB2BGR)
-      
-      # 保存原始图像
-      img_file = os.path.join(clean_dir, f'clean_{i}.png')
-      cv2.imwrite(img_file, img)
-      
-      # 保存带噪声的图像
-      img_file = os.path.join(noisy_dir, f'noisy_{i}.png')
-      cv2.imwrite(img_file, noisy_img)
-  return
+    # for i in tqdm(range(num_images)):
+    #     # 获取图像数据
+    #     image, label = next(dataiter)
+    #     image = image[0]  # 形状: (3, 32, 32)
+    #     noisy_image = add_noise(image)  # 形状: (3, 32, 32)
+
+    #     # 转换为 numpy 并调整通道顺序为 (H, W, C)
+    #     img = image.permute(1, 2, 0).numpy()  # 形状: (32, 32, 3)
+    #     noisy_img = noisy_image.permute(1, 2, 0).numpy()  # 形状: (32, 32, 3)
+
+    #     # 反标准化：从 [-1, 1] 映射回 [0, 1]
+    #     img = (img * 0.5) + 0.5  # [0, 1]
+    #     noisy_img = (noisy_img * 0.5) + 0.5  # [0, 1]
+
+    #     # 使用 matplotlib 保存图像（确保与 imshow 一致）
+    #     plt.imsave(os.path.join(dest_dir, 'clean', f'clean_{i}.png'), img)
+    #     plt.imsave(os.path.join(dest_dir, 'noisy', f'noisy_{i}.png'), noisy_img)
+    print('Generating', num_images, 'noisy images in', dest_dir)
+
+    # copy the folder and files in build/datapack to dest_dir
+    src_dir = 'build/datapack'
+    
+
+    copytree(src_dir, dest_dir)
+    
+    return
 
 
 def make_target(build_dir,target,num_images,app_dir):

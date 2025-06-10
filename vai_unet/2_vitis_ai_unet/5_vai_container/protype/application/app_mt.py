@@ -29,17 +29,27 @@ _divider = '-------------------------------'
 
 def preprocess_fn(image_path, fix_scale):
     '''
-    Image pre-processing.
-    Opens image as grayscale, adds channel dimension, normalizes to range 0:1
-    and then scales by input quantization scaling factor
-    input arg: path of image file
-    return: numpy array
+    Image pre-processing for CIFAR-10 (32x32x3 RGB).
+    - Loads image in RGB (not grayscale)
+    - Normalizes to range [0, 1] and scales by quantization factor
+    - Returns int8 numpy array (H, W, C)
     '''
-    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    image = image.reshape(28,28,1)
-    image = image * (1/255.0) * fix_scale
+    # Read image as RGB (CIFAR-10 is 32x32x3)
+    image = cv2.imread(image_path, cv2.IMREAD_COLOR)  # Use COLOR instead of GRAYSCALE
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)    # OpenCV uses BGR by default
+    
+    # Resize to 32x32 if needed (optional, ensure compatibility)
+    if image.shape != (32, 32, 3):
+        image = cv2.resize(image, (32, 32))
+    
+    # Normalize to [0, 1] and apply scaling
+    image = image * (1.0 / 255.0) * fix_scale
+    
+    # Convert to int8 (quantization)
     image = image.astype(np.int8)
+    
     return image
+
 
 
 def get_child_subgraph_dpu(graph: "Graph") -> List["Subgraph"]:
@@ -57,57 +67,61 @@ def get_child_subgraph_dpu(graph: "Graph") -> List["Subgraph"]:
     ]
 
 
-def runDPU(id,start,dpu,img):
-    '''get tensor'''
+def runDPU(id, start, dpu, img):
+    '''Run DPU inference for CIFAR-10 (32x32x3 RGB input/output)'''
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
-    input_ndim = tuple(inputTensors[0].dims)
-    output_ndim = tuple(outputTensors[0].dims)
-
-    # we can avoid output scaling if use argmax instead of softmax
-    #output_fixpos = outputTensors[0].get_attr("fix_point")
-    #output_scale = 1 / (2**output_fixpos)
+    input_ndim = tuple(inputTensors[0].dims)   # Expected input shape (e.g., [batch,32,32,3])
+    output_ndim = tuple(outputTensors[0].dims) # Expected output shape (e.g., [batch,32,32,3])
 
     batchSize = input_ndim[0]
     n_of_images = len(img)
     count = 0
     write_index = start
-    ids=[]
+    ids = []
     ids_max = 10
     outputData = []
+    
+    # Initialize output buffers (for CIFAR-10's 32x32x3 output)
     for i in range(ids_max):
         outputData.append([np.empty(output_ndim, dtype=np.int8, order="C")])
+    
+    # Initialize a list to store output images
+    output_images = []
+
     while count < n_of_images:
-        if (count+batchSize<=n_of_images):
-            runSize = batchSize
-        else:
-            runSize=n_of_images-count
+        runSize = min(batchSize, n_of_images - count)
 
-        '''prepare batch input/output '''
-        inputData = []
+        # Prepare input batch (32x32x3)
         inputData = [np.empty(input_ndim, dtype=np.int8, order="C")]
-
-        '''init input image to input buffer '''
         for j in range(runSize):
-            imageRun = inputData[0]
-            imageRun[j, ...] = img[(count + j) % n_of_images].reshape(input_ndim[1:])
-        '''run with batch '''
-        job_id = dpu.execute_async(inputData,outputData[len(ids)])
-        ids.append((job_id,runSize,start+count))
-        count = count + runSize 
-        if count<n_of_images:
-            if len(ids) < ids_max-1:
-                continue
+            inputData[0][j, ...] = img[(count + j) % n_of_images].reshape(input_ndim[1:])
+
+        # Run DPU async
+        job_id = dpu.execute_async(inputData, outputData[len(ids)])
+        ids.append((job_id, runSize, start + count))
+        count += runSize
+
+        # Process completed jobs if queue is full or all images are processed
+        if count < n_of_images and len(ids) < ids_max - 1:
+            continue
+
         for index in range(len(ids)):
             dpu.wait(ids[index][0])
             write_index = ids[index][2]
-            '''store output vectors '''
+
+            # Capture and store output images (32x32x3)
             for j in range(ids[index][1]):
-                # we can avoid output scaling if use argmax instead of softmax
-                # out_q[write_index] = np.argmax(outputData[0][j] * output_scale)
-                out_q[write_index] = np.argmax(outputData[index][0][j])
+                output_img = outputData[index][0][j]  # Shape: (32,32,3)
+                output_images.append(output_img.copy())  # Save to output list
+                out_q[write_index] = output_img  # Original logic (if needed)
                 write_index += 1
-        ids=[]
+
+        ids = []
+
+    return output_images  # Returns all output images as a list of 32x32x3 arrays
+
+
 
 
 def app(image_dir,threads,model):
@@ -165,20 +179,50 @@ def app(image_dir,threads,model):
 
 
     ''' post-processing '''
-    classes = ['zero','one','two','three','four','five','six','seven','eight','nine'] 
-    correct = 0
-    wrong = 0
+    # save denoised images
+    clean_dir = 'images/clean'
+    noisy_dir = 'images/noisy'
+    denoised_dir = 'images/denoised'
+    if not os.path.exists(denoised_dir):
+        os.makedirs(denoised_dir)
+
+    # Get output scale (if DPU output is quantized)
+    output_fixpos = all_dpu_runners[0].get_output_tensors()[0].get_attr("fix_point")
+    output_scale = 2 ** output_fixpos if output_fixpos is not None else 1.0
+
+    average_psnr = 0
+    average_mse = 0
+
     for i in range(len(out_q)):
-        prediction = classes[out_q[i]]
-        ground_truth, _ = listimage[i].split('_',1)
-        if (ground_truth==prediction):
-            correct += 1
-        else:
-            wrong += 1
-    accuracy = correct/len(out_q)
-    print('Correct:%d, Wrong:%d, Accuracy:%.4f' %(correct,wrong,accuracy))
-    print (_divider)
-    return
+        # 1. De-quantize and scale DPU output to [0, 255]
+        denoised_img = (out_q[i] / output_scale).clip(0, 1) * 255
+        denoised_img = denoised_img.astype(np.uint8)  # Convert to uint8 for image saving
+        
+        # 2. Save denoised image (as RGB)
+        output_path = os.path.join(denoised_dir, f'denoised_{i}.png')
+        cv2.imwrite(output_path, cv2.cvtColor(denoised_img, cv2.COLOR_RGB2BGR))  # OpenCV uses BGR
+        
+        # 3. Load original clean image (as RGB)
+        clean_image_path = os.path.join(clean_dir, f'clean_{i}.png')
+        clean_image = cv2.imread(clean_image_path, cv2.IMREAD_COLOR)
+        clean_image = cv2.cvtColor(clean_image, cv2.COLOR_BGR2RGB)  # Convert to RGB
+        
+        # 4. Calculate MSE and PSNR (RGB channels)
+        mse = np.mean((clean_image - denoised_img) ** 2)
+        psnr = 20 * np.log10(255.0 / np.sqrt(mse)) if mse != 0 else float('inf')
+        
+        average_psnr += psnr
+        average_mse += mse
+
+    average_psnr /= len(out_q)
+    average_mse /= len(out_q)
+
+    print('Denoised images saved to:', denoised_dir)
+    print('Average PSNR (RGB): %.2f dB' % average_psnr)
+    print('Average MSE (RGB): %.4f' % average_mse)
+    print('Done.')
+    print(_divider)
+
 
 
 
@@ -187,9 +231,9 @@ def main():
 
   # construct the argument parser and parse the arguments
   ap = argparse.ArgumentParser()  
-  ap.add_argument('-d', '--image_dir', type=str, default='images', help='Path to folder of images. Default is images')  
+  ap.add_argument('-d', '--image_dir', type=str, default='images/noisy', help='Path to folder of images. Default is images')  
   ap.add_argument('-t', '--threads',   type=int, default=1,        help='Number of threads. Default is 1')
-  ap.add_argument('-m', '--model',     type=str, default='CNN_zcu102.xmodel', help='Path of xmodel. Default is CNN_zcu102.xmodel')
+  ap.add_argument('-m', '--model',     type=str, default='Denoise_u50.xmodel', help='Path of xmodel. Default is CNN_zcu102.xmodel')
   args = ap.parse_args()  
   
   print ('Command line options:')

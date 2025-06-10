@@ -31,6 +31,6 @@ No CUDA devices available..selecting CPU
 [0;32m[VAIQ_NOTE]: =>Get module with quantization.[0m
 Files already downloaded and verified
 Files already downloaded and verified
-Test Loss: 0.1458
+Test Loss: 0.5431
 
 [0;32m[VAIQ_NOTE]: =>Exporting quant config.(./build/quant_model/quant_info.json)[0m

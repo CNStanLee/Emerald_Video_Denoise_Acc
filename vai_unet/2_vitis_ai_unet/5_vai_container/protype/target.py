@@ -47,19 +47,6 @@ def add_noise(images, noise_factor=NOISE_FACTOR):
 
 def generate_images(dset_dir, num_images, dest_dir):
 
-  classes = ['zero','one','two','three','four','five','six','seven','eight','nine']
-
-  # MNIST test dataset and dataloader
-  # test_dataset = torchvision.datasets.MNIST(dset_dir,
-  #                                           train=False, 
-  #                                           download=True,
-  #                                           transform=gen_transform)
-
-  # test_loader = torch.utils.data.DataLoader(test_dataset,
-  #                                           batch_size=1, 
-  #                                           shuffle=True)
-  
-
   test_dataset = torchvision.datasets.FashionMNIST(dset_dir,
                                             train=False, 
                                             download=True,

@@ -66,3 +66,4 @@ checkpoints/
 !DeployTest4.png
 !noisy_*.png
 !clean_*.png
+!denoised_*.png
