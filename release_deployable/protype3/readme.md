@@ -15,6 +15,7 @@ We can use this protype to develope API, when the final model ready I will repla
 - Put this deployable folder (release_deployable) into the viti-ai workspace (same path of docker_run.sh), there is already one inside it
 - In the vitis-ai docker, activate the DPU, you must activate it everytime you start the docker 
 ```shell
+(vai) conda activate vitis-ai-pytorch
 (vai) source /workspace/setup/alveo/setup.sh DPUCAHX8H
 ```
 - Run the application
