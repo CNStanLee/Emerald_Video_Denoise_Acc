@@ -1,0 +1,26 @@
+
+------------------------------------
+3.7.12 | packaged by conda-forge | (default, Oct 26 2021, 06:08:53) 
+[GCC 9.4.0]
+------------------------------------
+Command line options:
+ --build_dir    :  ./build
+ --target       :  u50
+ --num_images   :  10
+ --app_dir      :  application
+------------------------------------
+
+Copying application code from application ...
+Copying compiled model from ./build/compiled_model/UnetGenerator_u50.xmodel ...
+Traceback (most recent call last):
+  File "target.py", line 124, in <module>
+    main()
+  File "target.py", line 120, in main
+    make_target(args.build_dir, args.target, args.num_images, args.app_dir)
+  File "target.py", line 85, in make_target
+    shutil.copy(model_path, target_dir)
+  File "/opt/vitis_ai/conda/envs/vitis-ai-pytorch/lib/python3.7/shutil.py", line 248, in copy
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+  File "/opt/vitis_ai/conda/envs/vitis-ai-pytorch/lib/python3.7/shutil.py", line 120, in copyfile
+    with open(src, 'rb') as fsrc:
+FileNotFoundError: [Errno 2] No such file or directory: './build/compiled_model/UnetGenerator_u50.xmodel'

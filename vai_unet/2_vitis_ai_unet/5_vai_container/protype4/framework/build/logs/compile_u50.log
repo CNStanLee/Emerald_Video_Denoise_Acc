@@ -1,0 +1,11 @@
+[UNILOG][INFO] Compile mode: dpu
+[UNILOG][INFO] Debug mode: function
+[UNILOG][INFO] Target architecture: DPUCAHX8H_ISA2
+[UNILOG][INFO] Graph name: UnetGenerator, with op num: 98
+[UNILOG][INFO] Begin to compile...
+[0;31m[UNILOG][FATAL][XCOM_UNSUPPORT_QUANTIZATION][The fix info is error or unsupported.] elew0's quantization info's variation is too large.
+[m*** Check failure stack trace: ***
+Aborted (core dumped)
+**************************************************
+* VITIS_AI Compilation - Xilinx Inc.
+**************************************************

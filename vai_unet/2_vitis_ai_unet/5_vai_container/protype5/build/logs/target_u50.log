@@ -1,0 +1,15 @@
+
+------------------------------------
+3.7.12 | packaged by conda-forge | (default, Oct 26 2021, 06:08:53) 
+[GCC 9.4.0]
+------------------------------------
+Command line options:
+ --build_dir    :  ./build
+ --target       :  u50
+ --num_images   :  10
+ --app_dir      :  application
+------------------------------------
+
+Copying application code from application ...
+Copying compiled model from ./build/compiled_model/UnetGenerator_u50.xmodel ...
+Generating 10 noisy images in ./build/target_u50/images
