@@ -1,7 +1,7 @@
 
 ------------------------------------
-3.6.13 | packaged by conda-forge | (default, Sep 23 2021, 07:56:31) 
-[GCC 9.4.0]
+3.8.6 | packaged by conda-forge | (default, Oct  7 2020, 19:08:05) 
+[GCC 7.5.0]
 ------------------------------------
 Command line options:
  --build_dir    :  ./build
