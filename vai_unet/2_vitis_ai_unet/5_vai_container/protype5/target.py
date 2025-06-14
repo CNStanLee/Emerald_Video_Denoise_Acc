@@ -78,10 +78,18 @@ def make_target(build_dir,target,num_images,app_dir):
     print('Copying application code from',app_dir,'...')
     shutil.copy(os.path.join(app_dir, 'app_mt.py'), target_dir)
 
+    # copy readme file
+    shutil.copy(os.path.join(app_dir, 'readme.md'), target_dir)
+
     # copy compiled model
     model_path = comp_dir + '/UnetGenerator_' + target + '.xmodel'
     print('Copying compiled model from',model_path,'...')
     shutil.copy(model_path, target_dir)
+    
+    # copy checksum file
+    checksum_path = comp_dir + '/md5sum.txt'
+    print('Copying checksum file from',checksum_path,'...')
+    shutil.copy(checksum_path, target_dir)
 
     # create images
     dest_dir = target_dir + '/images'

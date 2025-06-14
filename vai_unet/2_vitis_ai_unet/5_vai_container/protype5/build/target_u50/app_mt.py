@@ -26,6 +26,15 @@ import argparse
 
 _divider = '-------------------------------'
 
+image_width = 256
+image_height = 256
+image_channels = 3
+
+image_path = 'images/'
+noisy_image_path = image_path + 'noisy/'
+clean_image_path = image_path + 'clean/'
+denoised_image_path = image_path + 'denoised/'
+
 
 def preprocess_fn(image_path, fix_scale):
 
@@ -34,8 +43,8 @@ def preprocess_fn(image_path, fix_scale):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)    # OpenCV uses BGR by default
     
     # Resize to 32x32 if needed (optional, ensure compatibility)
-    # if image.shape != (32, 32, 3):
-    #     image = cv2.resize(image, (32, 32))
+    if image.shape != (image_height, image_width, image_channels):
+        image = cv2.resize(image, (image_height, image_width))
     
     # Normalize to [0, 1] and apply scaling
     image = image * (1.0 / 255.0) * fix_scale
@@ -66,8 +75,9 @@ def runDPU(id, start, dpu, img):
     '''Run DPU inference for CIFAR-10 (32x32x3 RGB input/output)'''
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
-    input_ndim = tuple(inputTensors[0].dims)   # Expected input shape (e.g., [batch,32,32,3])
-    output_ndim = tuple(outputTensors[0].dims) # Expected output shape (e.g., [batch,32,32,3])
+    input_ndim = tuple(inputTensors[0].dims)   
+    output_ndim = tuple(outputTensors[0].dims) 
+    print(f"Input shape: {input_ndim}, Output shape: {output_ndim}")
 
     batchSize = input_ndim[0]
     n_of_images = len(img)
@@ -87,7 +97,6 @@ def runDPU(id, start, dpu, img):
     while count < n_of_images:
         runSize = min(batchSize, n_of_images - count)
 
-        # Prepare input batch (32x32x3)
         inputData = [np.empty(input_ndim, dtype=np.int8, order="C")]
         for j in range(runSize):
             inputData[0][j, ...] = img[(count + j) % n_of_images].reshape(input_ndim[1:])
@@ -105,16 +114,15 @@ def runDPU(id, start, dpu, img):
             dpu.wait(ids[index][0])
             write_index = ids[index][2]
 
-            # Capture and store output images (32x32x3)
             for j in range(ids[index][1]):
-                output_img = outputData[index][0][j]  # Shape: (32,32,3)
+                output_img = outputData[index][0][j] 
                 output_images.append(output_img.copy())  # Save to output list
                 out_q[write_index] = output_img  # Original logic (if needed)
                 write_index += 1
 
         ids = []
 
-    return output_images  # Returns all output images as a list of 32x32x3 arrays
+    return output_images  
 
 
 

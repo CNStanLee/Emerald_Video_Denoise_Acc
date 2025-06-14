@@ -14,7 +14,7 @@ import torch
 from models import *
 
 BATCH_SIZE = 64
-EPOCHS = 5
+EPOCHS = 20
 NOISE_FACTOR = 0.2
 LEARNING_RATE = 0.001
 

@@ -51,7 +51,7 @@ LOG=$3
 
 compile() {
   vai_c_xir \
-  --xmodel      ${BUILD}/quant_model/UnetGenerator_int.xmodel \
+  --xmodel      ${BUILD}/quant_model/UnetGenerator_0_int.xmodel \
   --arch        $ARCH \
   --net_name    UnetGenerator_${TARGET} \
   --output_dir  ${BUILD}/compiled_model
