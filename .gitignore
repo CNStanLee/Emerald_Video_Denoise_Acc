@@ -68,3 +68,5 @@ checkpoints/
 !noisy_*.png
 !clean_*.png
 !denoised_*.png
+
+*.xmodel
