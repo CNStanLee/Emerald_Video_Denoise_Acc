@@ -27,7 +27,7 @@ No CUDA devices available..selecting CPU
 [0;32m[VAIQ_NOTE]: =>Quantizable module is generated.(./build/quant_model/UnetGenerator.py)[0m
 
 [0;32m[VAIQ_NOTE]: =>Get module with quantization.[0m
-Test Loss: 0.0034
+Test Loss: 0.0037
 
 [0;32m[VAIQ_NOTE]: =>Converting to xmodel ...[0m
 

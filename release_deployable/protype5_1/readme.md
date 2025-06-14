@@ -28,6 +28,3 @@ We can use this protype to develope API, when the final model ready I will repla
 - Check result
 The result of througput, latency, PSNR, MSE will be shown in the bash.
 The denoised result is in /workspace/release_deployable/protype5/images/denoised
-
-
-This is totally trained with vai 1.4.1 cpu mode

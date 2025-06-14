@@ -176,8 +176,8 @@ if __name__ == "__main__":
     # save the float model pth and onnx
     model_name = 'lic_unet'
     # check path exists
-    if not os.path.exists('build/float_model'):
-        os.makedirs('build/float_model')
+    if not os.path.exists('build/float_model_no_vai'):
+        os.makedirs('build/float_model_no_vai')
     # save the model state dict
     torch.save(model.state_dict(), 'build/float_model_no_vai/'+ model_name + '_'+ 'facades'  +'_f32.pth', _use_new_zipfile_serialization=False )
     # dummy_input = torch.randn(1, 3, 256, 256, dtype=torch.float32)
