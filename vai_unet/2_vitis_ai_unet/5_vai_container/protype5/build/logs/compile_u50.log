@@ -1,4 +1,3 @@
-[UNILOG][INFO] Target architecture: DPUCAHX8H_ISA2
 [UNILOG][INFO] Compile mode: dpu
 [UNILOG][INFO] Debug mode: function
 [UNILOG][INFO] Target architecture: DPUCAHX8H_ISA2
@@ -8,7 +7,7 @@
 [UNILOG][INFO] Compile done.
 [UNILOG][INFO] The meta json is saved to "/workspace/protype5/./build/compiled_model/meta.json"
 [UNILOG][INFO] The compiled xmodel is saved to "/workspace/protype5/./build/compiled_model/UnetGenerator_u50.xmodel"
-[UNILOG][INFO] The compiled xmodel's md5sum is 8dda91029ac0ea5a566598ceec0c7388, and has been saved to "/workspace/protype5/./build/compiled_model/md5sum.txt"
+[UNILOG][INFO] The compiled xmodel's md5sum is b9f7a975d82e29a2df9dbb8e2b70b5fe, and has been saved to "/workspace/protype5/./build/compiled_model/md5sum.txt"
 **************************************************
 * VITIS_AI Compilation - Xilinx Inc.
 **************************************************

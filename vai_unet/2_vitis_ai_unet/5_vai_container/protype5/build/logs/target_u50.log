@@ -1,6 +1,6 @@
 
 ------------------------------------
-3.6.13 | packaged by conda-forge | (default, Sep 23 2021, 07:56:31) 
+3.7.12 | packaged by conda-forge | (default, Oct 26 2021, 06:08:53) 
 [GCC 9.4.0]
 ------------------------------------
 Command line options:
@@ -12,4 +12,5 @@ Command line options:
 
 Copying application code from application ...
 Copying compiled model from ./build/compiled_model/UnetGenerator_u50.xmodel ...
+Copying checksum file from ./build/compiled_model/md5sum.txt ...
 Generating 10 noisy images in ./build/target_u50/images

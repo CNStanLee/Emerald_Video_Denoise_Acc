@@ -7,7 +7,8 @@ We can use this protype to develope API, when the final model ready I will repla
 ## How to run this
 (bash): basic enviroment
 (vai): vitis-ai docker
-- Firstly start Vitis-AI env (I have already created one on the server in home/Changhong_workspace/Vitis-AI), cd into this folder and then run the docker
+- Copy the release_deployable folder into /home/emurphy/changhong_workspace/Vitis-AI
+- Start Vitis-AI env (I have already created one on the server in home/Changhong_workspace/Vitis-AI), cd into this folder and then run the docker
 ```shell
 (bash) cd /home/emurphy/changhong_workspace/Vitis-AI
 (bash) source start_vai_141.sh

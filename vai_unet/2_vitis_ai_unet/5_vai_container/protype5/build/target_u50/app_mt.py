@@ -30,19 +30,16 @@ image_width = 256
 image_height = 256
 image_channels = 3
 
-image_path = 'images/'
-noisy_image_path = image_path + 'noisy/'
-clean_image_path = image_path + 'clean/'
-denoised_image_path = image_path + 'denoised/'
-
+clean_dir = 'images/clean'
+noisy_dir = 'images/noisy'
+denoised_dir = 'images/denoised'
 
 def preprocess_fn(image_path, fix_scale):
 
-    # Read image as RGB (CIFAR-10 is 32x32x3)
     image = cv2.imread(image_path, cv2.IMREAD_COLOR)  # Use COLOR instead of GRAYSCALE
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)    # OpenCV uses BGR by default
     
-    # Resize to 32x32 if needed (optional, ensure compatibility)
+    # Resize to 
     if image.shape != (image_height, image_width, image_channels):
         image = cv2.resize(image, (image_height, image_width))
     
@@ -72,7 +69,7 @@ def get_child_subgraph_dpu(graph: "Graph") -> List["Subgraph"]:
 
 
 def runDPU(id, start, dpu, img):
-    '''Run DPU inference for CIFAR-10 (32x32x3 RGB input/output)'''
+    '''Run DPU inference'''
     inputTensors = dpu.get_input_tensors()
     outputTensors = dpu.get_output_tensors()
     input_ndim = tuple(inputTensors[0].dims)   
@@ -183,9 +180,7 @@ def app(image_dir,threads,model):
 
     ''' post-processing '''
     # save denoised images
-    clean_dir = 'images/clean'
-    noisy_dir = 'images/noisy'
-    denoised_dir = 'images/denoised'
+
     if not os.path.exists(denoised_dir):
         os.makedirs(denoised_dir)
 
@@ -195,6 +190,8 @@ def app(image_dir,threads,model):
 
     average_psnr = 0
     average_mse = 0
+    average_noisy_psnr = 0
+    average_noisy_mse = 0
 
     for i in range(len(out_q)):
         # 1. De-quantize and scale DPU output to [0, 255]
@@ -256,7 +253,7 @@ def main():
   ap = argparse.ArgumentParser()  
   ap.add_argument('-d', '--image_dir', type=str, default='images/noisy', help='Path to folder of images. Default is images')  
   ap.add_argument('-t', '--threads',   type=int, default=1,        help='Number of threads. Default is 1')
-  ap.add_argument('-m', '--model',     type=str, default='UnetGenerator_u50.xmodel', help='Path of xmodel. Default is CNN_zcu102.xmodel')
+  ap.add_argument('-m', '--model',     type=str, default='deployable.xmodel', help='Path of xmodel. Default is CNN_zcu102.xmodel')
   args = ap.parse_args()  
   
   print ('Command line options:')

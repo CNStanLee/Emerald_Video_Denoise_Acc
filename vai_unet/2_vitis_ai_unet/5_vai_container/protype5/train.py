@@ -14,7 +14,7 @@ import torch
 from models import *
 
 BATCH_SIZE = 64
-EPOCHS = 20
+EPOCHS = 300
 NOISE_FACTOR = 0.2
 LEARNING_RATE = 0.001
 
@@ -160,7 +160,7 @@ if __name__ == "__main__":
             os.makedirs(output_dir)
         clean_dir = os.path.join(output_dir, 'clean')
         noisy_dir = os.path.join(output_dir, 'noisy')
-        denoised_dir = os.path.join(output_dir, 'denoised')
+        denoised_dir = os.path.join(output_dir, 'should_denoised')
         if not os.path.exists(clean_dir):
             os.makedirs(clean_dir)
         if not os.path.exists(noisy_dir):
@@ -180,8 +180,8 @@ if __name__ == "__main__":
         os.makedirs('build/float_model')
     # save the model state dict
     torch.save(model.state_dict(), 'build/float_model/'+ model_name + '_'+ 'facades'  +'_f32.pth', _use_new_zipfile_serialization=False )
-    dummy_input = torch.randn(1, 3, 256, 256, dtype=torch.float32)
-    torch.onnx.export(model, dummy_input, 'build/float_model/'+ model_name + '_'+ 'facades' +'_f32.onnx', 
-                  input_names=['input'], output_names=['output'], 
-                  dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}})
-    print(f"Model saved to build/float_model/{model_name}_facades_f32.pth and .onnx")
+    # dummy_input = torch.randn(1, 3, 256, 256, dtype=torch.float32)
+    # torch.onnx.export(model, dummy_input, 'build/float_model/'+ model_name + '_'+ 'facades' +'_f32.onnx', 
+    #               input_names=['input'], output_names=['output'], 
+    #               dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}})
+    # print(f"Model saved to build/float_model/{model_name}_facades_f32.pth and .onnx")
