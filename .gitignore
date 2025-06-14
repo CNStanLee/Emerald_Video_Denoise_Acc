@@ -70,3 +70,5 @@ checkpoints/
 !denoised_*.png
 
 *.xmodel
+
+!deployable.xmodel
