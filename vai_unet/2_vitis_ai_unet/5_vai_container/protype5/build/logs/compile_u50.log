@@ -8,7 +8,7 @@
 [UNILOG][INFO] Compile done.
 [UNILOG][INFO] The meta json is saved to "/workspace/protype5/./build/compiled_model/meta.json"
 [UNILOG][INFO] The compiled xmodel is saved to "/workspace/protype5/./build/compiled_model/UnetGenerator_u50.xmodel"
-[UNILOG][INFO] The compiled xmodel's md5sum is cefe60435fdc7be4f328d82364207993, and has been saved to "/workspace/protype5/./build/compiled_model/md5sum.txt"
+[UNILOG][INFO] The compiled xmodel's md5sum is d9d7aa6f5a19908b1daa6fc3f92f592e, and has been saved to "/workspace/protype5/./build/compiled_model/md5sum.txt"
 **************************************************
 * VITIS_AI Compilation - Xilinx Inc.
 **************************************************

@@ -87,10 +87,10 @@ def make_target(build_dir,target,num_images,app_dir):
     shutil.copy(model_path, target_dir)
     # rename it to deployable.xmodel
     deployable_model_path = target_dir + '/deployable.xmodel'
-    shutil.move(model_path, deployable_model_path)
+    shutil.copy(model_path, deployable_model_path)
     # delete xmodel file in target_dir
-    if os.path.exists(target_dir + '/UnetGenerator_' + target + '.xmodel'):
-        os.remove(target_dir + '/UnetGenerator_' + target + '.xmodel')
+    # if os.path.exists(target_dir + '/UnetGenerator_' + target + '.xmodel'):
+    #     os.remove(target_dir + '/UnetGenerator_' + target + '.xmodel')
     
     # copy checksum file
     checksum_path = comp_dir + '/md5sum.txt'
