@@ -1,4 +1,4 @@
-# Acc protype v3
+# Acc protype v5
 ## What this will do
 This is an acc protype which will denoise Cifar-10 with random noise using Alveo U50.
 We can use this protype to develope API, when the final model ready I will replace the acc while keeping same interface.

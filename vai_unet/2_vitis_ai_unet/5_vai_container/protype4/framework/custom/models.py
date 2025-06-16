@@ -12,7 +12,7 @@ class UnetSkipConnectionBlock(nn.Module):
             input_nc = outer_nc
 
         downconv = nn.Conv2d(input_nc, inner_nc, kernel_size=4, stride=2, padding=1, bias=False)
-        downrelu = nn.LeakyReLU(0.5, inplace=True)
+        downrelu = nn.LeakyReLU(0.1, inplace=True)
         #downrelu = nn.ReLU(inplace=True)
         uprelu = nn.ReLU(inplace=True)
         upconv = nn.ConvTranspose2d(inner_nc * 2, outer_nc, kernel_size=4, stride=2, padding=1, bias=False)
