@@ -72,3 +72,4 @@ checkpoints/
 *.xmodel
 
 !deployable.xmodel
+!branch.png
