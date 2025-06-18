@@ -19,5 +19,5 @@ You can train it use whatever method like GAN and whatever dataset.
 ![Branch](./branch.png)
 
 ## Change model structure
-- For this structure, I have verified with Alveo U50
-- If you change the structure of the model please let me know, and the verification we can start the further training
+- For this structure, I have verified with Alveo U50.
+- If you change the structure of the model please let me know, after the verification we can start the further training.
