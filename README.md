@@ -3,6 +3,11 @@
 ## Purpose
 This project is to rebuild Emmet Murphy's workflow aka transfering a UNet to Alveo U50 for denosing
 
+## Structure
+- model_for_training: float models for training
+- release_deployable: released xmodel and drivers verified with Alveo U50 on the server
+- vai_unet: workspace and source code to build the protypes and xmodels, main work path is 5_vai_container.
+
 ## Preparation
 Emmet's project was built up using Vitis-AI 1.4.1,
 we dont know if things build with this version will happy with the things built with VAI 3.0/3.5, thus we use VAI 1.4.1 to rebuild the flow.
