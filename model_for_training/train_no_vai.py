@@ -11,7 +11,7 @@ from torchvision import transforms
 from PIL import Image
 import matplotlib.pyplot as plt
 import torch
-from models_no_vai import *
+from models_cle_mod_novai import *
 
 BATCH_SIZE = 64
 EPOCHS = 600

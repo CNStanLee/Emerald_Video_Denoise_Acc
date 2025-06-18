@@ -1,20 +1,23 @@
 # Model for training
 
-## How to use
-In this folder, you can use train_no_vai.py to call the unet model in models_no_vai.py.
-Of course, this is just a demo from Emmet's networks_vitis.py
-You can train it use whatever method like GAN and whatever dataset
+## Known limitation
+- LeakyReLu alpha value must be 0.1015625 as this is the only value hardware support for the convinience to convert it to add and shift.
+- There is a known issue that VAI can not support the combination of concat-act-conv, this will assigned to CPU processing and generate subgpraphs.
+- I modified the model to meet these limitations as model: [models_cle_mod_novai.py](./models_cle_mod_novai.py) from [models_cle.py](./models_cle.py) 
+- For further changes, I suggest VAI support most of ops, you can modify the model as you like but then I need a fast check.
 
-## Why use this model
-There are two reasons:
-- For hardware implementation, if you are using leakyRuLu, the only available alpha value is 0.1015625, if we are using value far from this, that will lead to a vitis-unacceptable loss as I mentioned in the email before.
-- The Vitis-AI framework doesn't support relu after concat, and we need to tell the framework to quantize relu function, or it will be generated as multiple sub-graphs (CPU+DPU).
-- For Emmet's original model, it contain packs from pytorchnnct, to make it simpler. I splited it to a model pure pytorch.
+## How to use
+In this folder, you can use [train_no_vai.py](./train_no_vai.py) to call the unet model in [modified model](./models_cle_mod_novai.py).
+Of course, this is just a demo
+You can train it use whatever method like GAN and whatever dataset.
+
 
 ## Flow
-- Train the model in models_no_vai.py,
-- Then I will load the pth with vai version model in models.py and quantize, deploy it.
+- The difference of each model and workflow is shown as follows.
+
+
+![Branch](./branch.png)
 
 ## Change model structure
 - For this structure, I have verified with Alveo U50
-- If you change the structure of the model please let me know, I have scripts to do a fast verification to double check if hardware is happy with it :)
+- If you change the structure of the model please let me know, and the verification we can start the further training
