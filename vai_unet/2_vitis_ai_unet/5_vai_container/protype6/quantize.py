@@ -34,7 +34,7 @@ from models_cle_mod_vai import *
 
 # model information
 model_struct_i = UnetGenerator(input_nc=3, output_nc=3, num_downs=8)
-model_weights_i = 'cle_mod_vai_unet_facades_f32.pth'
+model_weights_i = 'lic_unet_facades_f32.pth'
 
 # dataset inormation
 dataset_dir = 'facades'
